@@ -31,13 +31,19 @@ class DisplayCard extends PureComponent {
         this.props.onCardClick(user, 'DELETE')
     }
 
-    arrayBufferToBase64(buffer) {
-        const base64Flag = 'data:image/jpeg;base64,';
-        let binary = '';
-        const bytes = [].slice.call(new Uint8Array(buffer));
-        bytes.forEach((b) => binary += String.fromCharCode(b));
-        return base64Flag+ window.btoa(binary);
-    };
+    arrayBufferToBase64(user) {
+        if(user.img && user.img.data && user.img.data.data){
+            const buffer = user.img.data.data;
+            const base64Flag = 'data:image/jpeg;base64,';
+            let binary = '';
+            const bytes = [].slice.call(new Uint8Array(buffer));
+            bytes.forEach((b) => binary += String.fromCharCode(b));
+            return base64Flag + window.btoa(binary);
+        } else {
+            return 'https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-alt-512.png'
+        }
+       
+    }
 
 
     renderDisplayCard = (user) => {
@@ -46,7 +52,7 @@ class DisplayCard extends PureComponent {
             return (
                 <div onClick={() => onCardClick(user, 'UPDATE')} key={user._id}>
                     <Card style={{ width: '18rem', margin: '10px', padding: '10px' }}>
-                        <Card.Img variant="top" src={this.arrayBufferToBase64(user.img.data.data)} />
+                        <Card.Img variant="top" src={this.arrayBufferToBase64(user)} />
                         <Card.Body>
                             <Card.Title>Name : {user.name}</Card.Title>
                             <Card.Title>Email : {user.email}</Card.Title>

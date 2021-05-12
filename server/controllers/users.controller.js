@@ -5,15 +5,18 @@ const path = require('path');
 
 exports.create = (req, res) => {
 
-    const user = new User({
+    let user = new User({
         name: req.body.name,
         email: req.body.email,
         dob: req.body.dob,
         country: req.body.country,
     });
 
-    user.img.data = fs.readFileSync(req.file.path)
-    user.img.contentType = 'image/png';
+    if(req && req.file && req.file.path){
+        user.img.data = fs.readFileSync(req.file.path)
+        user.img.contentType = 'image/png';
+    }
+
 
     User.find({ email: user.email }).then(userObj => {
         if (userObj.length){
