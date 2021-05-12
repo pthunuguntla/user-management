@@ -84,7 +84,7 @@ Next step is to build image
 
 navigate to folder from terminal and execute below command
 
-docker build -f Dockerfile -t user-management-portal-ui
+docker build -f Dockerfile -t user-management-portal-ui .
 
 once above step is succeeded then image will be created with named (user-management-portal-ui).
 
