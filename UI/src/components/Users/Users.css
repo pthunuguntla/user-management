@@ -1,0 +1,12 @@
+.User {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    top: 80px
+}
+
+.CancelButton {
+    margin: 20px;
+}
