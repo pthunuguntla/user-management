@@ -15,20 +15,27 @@ exports.create = (req, res) => {
     user.img.data = fs.readFileSync(req.file.path)
     user.img.contentType = 'image/png';
 
-
-    // Save a User in the MongoDB
-    user.save().then(data => {
-        // send uploading message to client
-        res.send({
-            statusCode: 200,
-            data
-        })
-    }).catch(err => {
-        res.send({
-            statusCode: 500,
-            error: err.message
-        })
-    });
+    User.find({ email: user.email }).then(userObj => {
+        if (userObj.length){
+            return res.status(200).json({
+                message: 'User Already Exists With given email'
+            })
+        } else {
+            // Save a User in the MongoDB
+            user.save().then(data => {
+                // send uploading message to client
+                res.send({
+                    statusCode: 200,
+                    data
+                })
+            }).catch(err => {
+                res.send({
+                    statusCode: 500,
+                    error: err.message
+                })
+            });
+        }
+    })
 };
 
 // FETCH all users
@@ -94,7 +101,7 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
     let userId = req.params.id
 
-    User.findByIdAndRemove(userId).select('-__v -_id')
+    User.findByIdAndDelete(userId).select('-__v -_id')
         .then(user => {
             if (!user) {
                 res.status(404).json({

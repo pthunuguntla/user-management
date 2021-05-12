@@ -18,16 +18,22 @@ export default function userreducer(state = {}, action) {
         case 'Create': {
             return {
                 users: [...state.users, ...[action.userObj]] ,
+                message: action.message,
+                isError: action.isError
             }
         }
         case 'Update': {
             return {
                 users: updatedUsers(state.users, action.updatedUser),
+                message: action.message,
+                isError: false
             }
         }
         case 'Delete': {
             return {
                 users: usersAfterDelete(state.users, action.user),
+                message: action.message,
+                isError: false
             };
         }
         case 'Fetch': {
@@ -41,6 +47,14 @@ export default function userreducer(state = {}, action) {
                 countries: action.countries
             }
         }
+
+        case 'Error': {
+            return {
+                isError: true,
+                message: action.message
+            }
+        }
+
         default: {
             return state
         }

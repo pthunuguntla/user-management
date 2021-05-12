@@ -16,11 +16,13 @@ class DisplayCard extends PureComponent {
         users: PropTypes.array,
         noOfUsers: PropTypes.number,
         onCardClick: PropTypes.func,
+        isLoading: PropTypes.bool
     }
 
     static defaultProps = {
         users: [],
         onCardClick: noop,
+        isLoading: false
     }
 
     onDeleteCard = (e, user) => {
@@ -40,26 +42,31 @@ class DisplayCard extends PureComponent {
 
     renderDisplayCard = (user) => {
         const { onCardClick } = this.props;
-        return ( 
-            <div onClick={() => onCardClick(user, 'UPDATE')}>
-                <Card style={{ width: '18rem', margin: '10px', padding: '10px' }}>
-                    <Card.Img variant="top" src={this.arrayBufferToBase64(user.img.data.data)} />
-                    <Card.Body>
-                        <Card.Title>Name : {user.name}</Card.Title>
-                        <Card.Title>Email : {user.email}</Card.Title>
-                        <Card.Title>Age : {moment().diff(user.dob, 'years')}</Card.Title>
-                    </Card.Body>
-                    <Button variant="primary" onClick={(e) => this.onDeleteCard(e, user)}>Delete User</Button>
-                </Card>
-            </div>
-        )
+        if(user){
+            return (
+                <div onClick={() => onCardClick(user, 'UPDATE')} key={user._id}>
+                    <Card style={{ width: '18rem', margin: '10px', padding: '10px' }}>
+                        <Card.Img variant="top" src={this.arrayBufferToBase64(user.img.data.data)} />
+                        <Card.Body>
+                            <Card.Title>Name : {user.name}</Card.Title>
+                            <Card.Title>Email : {user.email}</Card.Title>
+                            <Card.Title>Age : {moment().diff(user.dob, 'years')}</Card.Title>
+                        </Card.Body>
+                        <Button variant="primary" onClick={(e) => this.onDeleteCard(e, user)}>Delete User</Button>
+                    </Card>
+                </div>
+            )
+        } else {
+            return(<div/>)
+        }
+        
     }
 
     render(){
-        const { users } = this.props;
+        const { users, isLoading } = this.props;
         return (
             <div className = "DisplayCard">
-                {users.map(this.renderDisplayCard)}
+                {!isLoading && users.length? users.map(this.renderDisplayCard) : <div/> }
             </div>
         )
     }

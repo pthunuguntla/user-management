@@ -13,6 +13,7 @@ import './Users.css';
 import countriesData from '../../mockdata/countries';
 
 import DisplayCard from '../Card'
+import Message from '../Message';
 
 
 
@@ -34,11 +35,15 @@ const mapStateToProps = state => {
     const users = state.userreducer.users;
     const noOfUsers = state.userreducer.noOfUsers;
     const countries = countriesData;
+    const isError = state.userreducer.isError;
+    const errorMessage = state.userreducer.message;    
     return {
         userObj,
         users,
         noOfUsers,
         countries,
+        isError,
+        errorMessage
     }
 };
 
@@ -70,6 +75,8 @@ class Users extends PureComponent {
         userObj: PropTypes.object,
         users: PropTypes.array,
         noOfUsers: PropTypes.number,
+        errorMessage: PropTypes.string,
+        isError: PropTypes.bool,
     }
 
     static defaultProps = {
@@ -88,6 +95,7 @@ class Users extends PureComponent {
         renderForm : false,
         userInfo: {},
         action: 'CREATE',
+        isLoading: false,
     }
 
     onChange = (e, stateLabel) => {
@@ -113,7 +121,13 @@ class Users extends PureComponent {
     onClick = async (userInfo) => {
         const { name, email, country, dob, action, userInfo: { image } } = this.state;
         if(action === 'CREATE') {
+            this.setState({
+                isLoading: true
+            })
             await this.props.createUser(name, email, country, dob, image);
+            this.setState({
+                isLoading: false
+            })
         }
         if(action === 'UPDATE') {
             await this.props.updateUser(userInfo);
@@ -213,18 +227,19 @@ class Users extends PureComponent {
 
  
    render() {
-        const { userObj, users } = this.props;
-
-       const { renderForm } = this.state;
+       const { userObj, users, isError, errorMessage } = this.props;
+       const { renderForm, isLoading } = this.state;
+       const type = isError ? 'danger' : 'success';
 
         return (
             <Fragment>
                 <div className="User">
+                    {errorMessage ? <Message type={type} message={errorMessage} /> : <div/>}
                     {users.length && !renderForm ? <Button variant="primary" onClick={this.onAddUser}>
                         Add User
                     </Button> : <div/>} 
-                    {(isEmpty(userObj) && !users.length) || renderForm ? (this.renderFormComponent()) : 
-                        <DisplayCard onCardClick={(user, action) => this.onCardClick(user, action)} users={users}/> }
+                    {(isEmpty(userObj) && !users.length) || renderForm || type === 'danger' ? (this.renderFormComponent()) : 
+                        <DisplayCard onCardClick={(user, action) => this.onCardClick(user, action)} users={users} isLoading={isLoading}/> }
                 </div>
             </Fragment>
         )

@@ -19,9 +19,11 @@ const addUser = (name, email, country, dob, imageFile,  dispatch) => {
         .then(data => {
             dispatch({
                 type: 'Create',
-                userObj: data.data
+                userObj: data.data,
+                message: data.message || 'Created Succesfully',
+                isError: data.message !== undefined
             })
-        });
+        })    
 }
 
 const getAllUsers = (dispatch) => {
@@ -65,7 +67,8 @@ const updateUserDetails = (userInfo, dispatch) => {
         .then(data => {
             dispatch({
                 type: 'Update',
-                updatedUser: data.user
+                updatedUser: data.user,
+                message: 'Updated Succesfully'
             })
         });
 }
@@ -87,6 +90,7 @@ const deleteExistingUser = (userInfo, dispatch) => {
             dispatch({
                 type: 'Delete',
                 user: data.user,
+                message: 'Deleted Succesfully'
             })
         });
 }
